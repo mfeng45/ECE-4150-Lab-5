@@ -1,0 +1,17 @@
+--In Local mode with input file on Hadoop instance:
+a = LOAD 'file:///home/hadoop/googlebooks-eng-us-all-2gram-20090715-50-subset.csv'  AS (ngram:chararray, year:int, match_count:int, page_count:int, volume_count:int);
+
+--In MapReduce mode with input file on HDFS:
+a = LOAD '/user/mfeng45/googlebooks-eng-us-all-2gram-20090715-50-subset.csv'  AS (ngram:chararray, year:int, match_count:int, page_count:int, volume_count:int);
+
+b = GROUP a BY year;
+
+result = FOREACH b {
+    c = ORDER a BY match_count DESC;
+    top_record = LIMIT c 1;
+    d = FOREACH top_record GENERATE year, ngram, match_count;
+    GENERATE FLATTEN(d);
+}
+
+
+store result into '/user/mfeng45/most_common_in_2003';

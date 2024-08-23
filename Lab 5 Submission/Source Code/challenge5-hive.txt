@@ -1,0 +1,5 @@
+SELECT bigram, SUM(matchcount) AS total_count FROM `default`.`hue__tmp_googlebooksengusall2gram2009071550subset`
+GROUP BY bigram 
+ORDER BY total_count DESC 
+LIMIT 1
+
